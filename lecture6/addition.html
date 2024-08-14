@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Addition Game</title>
+        <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <style>
+            #app {
+                text-align: center;
+                font-family: sans-serif;
+            }
+            #problem {
+                font-size: 50px;
+            }
+            .incorrect {
+                color: red;
+            }
+            #winner {
+                font-size: 50px;
+                color: green;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app"></div>
+
+        <script type="text/babel">
+            function AdditionGame() {
+                const [state, setState] = React.useState({
+                    num1: 2,
+                    num2: 4,
+                    score: 0,
+                    response: '',
+                    inncorect: false
+                });
+
+                function updateResponse(event) {
+                    setState({
+                        ...state,
+                        response: event.target.value
+                    });
+                }
+
+                function inputKeyPress(event) {
+                    if (event.key === "Enter") {
+                        const answer = parseInt(state.response);
+                        if (answer === state.num1 + state.num2) {
+                            setState({
+                                ...state,
+                                num1: Math.ceil(Math.random() * 10),
+                                num2: Math.ceil(Math.random() * 10),
+                                score: state.score + 1,
+                                response: '',
+                                incorrect: false
+                            });
+                        } else {
+                            setState({
+                                ...state,
+                                score: state.score - 1,
+                                response: '',
+                                incorrect: true,
+                            });
+                        }
+                    }
+                }
+
+                if (state.score === 10) {
+                    return (
+                        <div id="winner">
+                            <h1>You won!</h1>
+                        </div>
+                    )
+                }
+
+                return (
+                    <div>
+                        <div className={state.incorrect ? "incorrect": ""} id="problem">{state.num1} + {state.num2}</div>
+                        <input autoFocus={true} onKeyPress={inputKeyPress} onChange={updateResponse} value={state.response} />
+                        <div>Score: {state.score}</div>
+                    </div>
+                );
+            }
+
+            ReactDOM.render(<AdditionGame />, document.getElementById('app'));
+        </script>
+    </body>
+</html>
